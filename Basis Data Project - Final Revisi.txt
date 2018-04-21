@@ -1,0 +1,233 @@
+CREATE TABLE customer_list
+(customer_id number(4) PRIMARY KEY ,
+name VARCHAR2(40) NOT NULL ,
+phone_number VARCHAR2(16) NOT NULL ,
+email VARCHAR2(40) NOT NULL ,
+address VARCHAR2(100) NOT NULL ,
+note VARCHAR2(100));
+
+CREATE TABLE notification_list
+(user_id number(4) NOT NULL ,
+customer_id number(4) NOT NULL ,
+notification_number number(4) PRIMARY KEY ,
+message VARCHAR2(3000) NOT NULL,
+urgency VARCHAR2(16) NOT NULL,
+note VARCHAR2(100) ,
+FOREIGN KEY (customer_id) REFERENCES customer_list(customer_id) ,
+FOREIGN KEY (user_id) REFERENCES system_user_list(user_id));
+
+CREATE TABLE order_list
+(user_id number(4) ,
+customer_id number(4) NOT NULL ,
+design_number number(4) ,
+order_number number(4) PRIMARY KEY ,
+order_item VARCHAR2(40) NOT NULL ,
+order_detail VARCHAR2(40) NOT NULL ,
+order_sum number(16) NOT NULL ,
+note VARCHAR2(100) ,
+FOREIGN KEY (customer_id) REFERENCES customer_list(customer_id) ,
+FOREIGN KEY (design_number) REFERENCES design_list(design_number) ,
+FOREIGN KEY (user_id) REFERENCES system_user_list(user_id));
+
+CREATE TABLE sales_invoice_list
+(user_id number(4) , 
+customer_id number(4) NOT NULL ,
+order_number number(4) NOT NULL ,
+invoice_number number(4) PRIMARY KEY ,
+invoice_item VARCHAR2(40) NOT NULL ,
+invoice_detail VARCHAR2(40) NOT NULL ,
+invoice_sum number(16) NOT NULL ,
+note VARCHAR2(100) ,
+FOREIGN KEY (customer_id) REFERENCES customer_list(customer_id) ,
+FOREIGN KEY (order_number) REFERENCES order_list(order_number) ,
+FOREIGN KEY (user_id) REFERENCES system_user_list(user_id));
+
+CREATE TABLE payment_list
+(user_id number(4) ,
+customer_id number(4) NOT NULL ,
+invoice_number number(4) NOT NULL ,
+payment_number number(4) PRIMARY KEY ,
+payment_item VARCHAR2(40) NOT NULL ,
+payment_detail VARCHAR2(40) NOT NULL ,
+payment_sum number(16) ,
+note VARCHAR2(100) ,
+FOREIGN KEY (customer_id) REFERENCES customer_list(customer_id) ,
+FOREIGN KEY (invoice_number) REFERENCES sales_invoice_list(invoice_number) ,
+FOREIGN KEY (user_id) REFERENCES system_user_list(user_id));
+
+CREATE TABLE manufacture_list
+(user_id number(4) , 
+customer_id number(4) NOT NULL ,
+order_number number(4) NOT NULL ,
+design_number number(4) NOT NULL ,
+manufacture_number number(4) PRIMARY KEY ,
+manufacture_item VARCHAR2(40) NOT NULL ,
+manufacture_detail VARCHAR2(40) NOT NULL ,
+progress_timeline VARCHAR2(40) NOT NULL ,
+note VARCHAR2(100) ,
+FOREIGN KEY (customer_id) REFERENCES customer_list(customer_id) ,
+FOREIGN KEY (order_number) REFERENCES order_list(order_number) ,
+FOREIGN KEY (user_id) REFERENCES system_user_list(user_id));
+
+CREATE TABLE design_list
+(user_id number(4) ,
+customer_id number(4) NOT NULL ,
+catalog_number number(4) NOT NULL ,
+design_number number(4) PRIMARY KEY ,
+note VARCHAR2(100) ,
+FOREIGN KEY (customer_id) REFERENCES customer_list(customer_id) ,
+FOREIGN KEY (catalog_number) REFERENCES catalog_list(catalog_number) ,
+FOREIGN KEY (user_id) REFERENCES system_user_list(user_id));
+
+CREATE TABLE catalog_list
+(catalog_number number(4) PRIMARY KEY ,
+description VARCHAR2(1000) ,
+note VARCHAR2(100));
+
+CREATE TABLE system_user_list
+(role_id number(4) NOT NULL ,
+user_id number(4) PRIMARY KEY ,
+name VARCHAR2(40) NOT NULL ,
+division VARCHAR2(16) NOT NULL ,
+position VARCHAR2(16) NOT NULL ,
+phone_number VARCHAR2(16) NOT NULL ,
+email VARCHAR2(40) NOT NULL ,
+address VARCHAR2(100) NOT NULL ,
+note VARCHAR2(100) ,
+FOREIGN KEY (role_id) REFERENCES role_list(role_id));
+
+CREATE TABLE role_list
+(role_id number(4) PRIMARY KEY ,
+permission_level number(1) NOT NULL ,
+description VARCHAR2(1000) NOT NULL ,
+note VARCHAR2(100));
+
+INSERT INTO role_list
+VALUES ( 0001 , 1 , 'sysadmin' , '' );
+
+INSERT INTO role_list
+VALUES ( 0002 , 0 , 'sales' , '' );
+
+INSERT INTO role_list
+VALUES ( 0003 , 0 , 'engineer' , '' );
+
+
+INSERT INTO catalog_list
+VALUES ( 0001 , 'Semi Gloss Metalic Taste' , '' );
+
+INSERT INTO catalog_list
+VALUES ( 0002 , 'Rugged Camo Mode' , '' );
+
+INSERT INTO catalog_list
+VALUES ( 0003 , 'Bluish Natural Pearl' , '' );
+
+
+INSERT INTO system_user_list
+VALUES ( 0001 , 0001 , 'John' , 'IT' , 'IT Manager' , '081122000039' , 'John.customcar@gmail.com' , 'jalan kemangi' , '' );
+
+INSERT INTO system_user_list
+VALUES ( 0002 , 0002 , 'Lie' , 'Sales' , 'Sales Leader' , '081233334559' , 'Lie.customcar@gmail.com' , 'jalan ampera' , '' );
+
+INSERT INTO system_user_list
+VALUES ( 0003 , 0003 , 'Bob' , 'Mechanic' , 'Head Engineer' , '098822314493' , 'Bob.customcar@gmail.com' , 'jalan sulang 2' , '' );
+
+
+INSERT INTO customer_list
+VALUES ( 0001 , 'Budi' , '0827464562928' , 'budi@budi.com' , 'jalan tenggiri' , '' );
+
+INSERT INTO customer_list
+VALUES ( 0002 , 'Bule' , '088764533364' , 'bule@bule.com' , 'jalan badak' , '' );
+
+INSERT INTO customer_list
+VALUES ( 0003 , 'Susi' , '092744233384' , 'susi@susi.com' , 'jalan aspal' , '' );
+
+
+INSERT INTO design_list
+VALUES ( 0002 , 0001 , 0001 , 0001 , 'Ferrari');
+
+INSERT INTO design_list
+VALUES ( 0002 , 0002 , 0002 , 0002 , 'Ford');
+
+INSERT INTO design_list
+VALUES ( 0002 , 0003 , 0003 , 0003 , 'Mercedes');
+
+
+INSERT INTO order_list
+VALUES ( 0002 , 0001 , 0001 , 0001 , 'Ferrari' , 'Semi Gloss Metallic Taste , set no 2' , 3000000000 , '' );
+
+INSERT INTO order_list
+VALUES ( 0002 , 0002 , 0002 , 0002 , 'Ford' , 'Rugged Camo Mode , set no 35' , 4500000000 , '' );
+
+INSERT INTO order_list
+VALUES ( 0002 , 0003 , 0003 , 0003 , 'Mercedes' , 'Bluish Natural Pearl , set no 26' , 2500000000 , '' );
+
+
+INSERT INTO sales_invoice_list
+VALUES ( 0002 , 0001 , 0001 , 0001 , 'Ferrari' , 'Semi Gloss Metallic Taste , set no 2' , 3000000000 , '' );
+
+INSERT INTO sales_invoice_list
+VALUES ( 0002 , 0002 , 0002 , 0002 , 'Ford' , 'Rugged Camo Mode , set no 35' , 4500000000 , '' );
+
+INSERT INTO sales_invoice_list
+VALUES ( 0002 , 0003 , 0003 , 0003 , 'Mercedes' , 'Bluish Natural Pearl , set no 26' , 2500000000 , '' );
+
+
+INSERT INTO payment_list
+VALUES ( 0002 , 0001 , 0001 , 0001 , 'Ferrari' , 'Semi Gloss Metallic Taste , set no 2' , 3000000000 , '' );
+
+INSERT INTO payment_list
+VALUES ( 0002 , 0002 , 0002 , 0002 , 'Ford' , 'Rugged Camo Mode , set no 35' , 4500000000 , '' );
+
+INSERT INTO payment_list
+VALUES ( 0002 , 0003 , 0003 , 0003 , 'Mercedes' , 'Bluish Natural Pearl , set no 26' , 2500000000 , '' );
+
+
+INSERT INTO manufacture_list
+VALUES ( 0002 , 0001 , 0001 , 0001 , 0001 , 'Ferrari' , 'Semi Gloss Metallic Taste , set no 2' , '75%' , '' );
+
+INSERT INTO manufacture_list
+VALUES( 0002 , 0002 , 0002 , 0002 , 0002 , 'Ford' , 'Rugged Camo Mode , set no 35' , '50%' , '' );
+
+INSERT INTO manufacture_list
+VALUES ( 0003 , 0003 , 0003 , 0003 , 0003 , 'Mercedes' , 'Bluish Natural Pearl , set no 26' , '40&' , '' );
+
+
+SELECT *
+FROM customer_list
+
+SELECT *
+FROM notification_list
+
+SELECT *
+FROM order_list
+
+SELECT *
+FROM sales_invoice_list
+
+SELECT *
+FROM payment_list
+
+SELECT *
+FROM manufacture_list
+
+SELECT *
+FROM design_list
+
+SELECT *
+FROM catalog_list
+
+SELECT *
+FROM system_user_list
+
+SELECT *
+FROM role_list
+
+
+SELECT *
+FROM design_list a LEFT JOIN customer_list b on a.customer_id = b.customer_id;
+
+SELECT *
+FROM  order_list a LEFT JOIN customer_list b on a.customer_id = b.customer_id;
+
+SELECT *
+FROM system_user_list a LEFT JOIN role_list b on a.role_id = b.role_id;
